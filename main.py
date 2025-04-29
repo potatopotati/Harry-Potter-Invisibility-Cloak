@@ -38,7 +38,7 @@ def main():
         background = create_background(capture)
     except ValueError as e:
         print(f'Error: {e}')
-        capture.release
+        capture.release()
         return
     lower_blue = np.array([90, 50, 50])    # Lower bound
     upper_blue = np.array([150, 255, 255]) # Upper bound
