@@ -18,16 +18,16 @@ def create_background(capture, num_frame=30):
 def create_mask(frame, lower,upper):
     hsv=cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower,upper)
-    # the mask will be black and white (white will be the towel)
+    #the mask will be black and white (white for pixels within the target color range)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8), iterations=2)
     mask = cv2.morphologyEx(mask, cv2.MORPH_DILATE, np.ones((3, 3), np.uint8), iterations=1)
     return mask
 
 def apply_effect(mask,frame,background):
-    notMask= cv2.bitwise_not(mask) #now towel will be black
-    foreground = cv2.bitwise_and(frame,frame,mask=notMask) #only the white part will have color. (towel part no color)
-    background=cv2.bitwise_and(background,background,mask=mask) #(towel part have color)
-    return cv2.add(foreground,background)
+    notMask= cv2.bitwise_not(mask) #the mask will be black and white (black for pixels within the target color range)
+    foreground = cv2.bitwise_and(frame,frame,mask=notMask) #Extract part of the frame that do not match the target color
+    background=cv2.bitwise_and(background,background,mask=mask) #Extract part of the frame that match the target color
+    return cv2.add(foreground,background) 
 
 def main():
     capture = cv2.VideoCapture(0)
